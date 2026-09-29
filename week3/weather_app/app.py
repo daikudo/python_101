@@ -24,19 +24,22 @@ def weather():
     our_data = {
         "city": data["location"]["name"],
         "timezone": data["location"]["tz_id"],
-        "temp": round(data["current"]["temp_c"])
+        "temp": round(data["current"]["temp_c"]),
+        "text": data["current"]["condition"]["text"],
+        "feels": round(data["current"]["feelslike_c"])
     }
     return our_data
 
 @app.route("/")
 def index():
-    return render_template("index.html", w=weather)
+    return render_template("index.html", w=weather())
 
-app.route("/api/weather")
+@app.route("/api/weather")
 def api ():
-    return jsonify(wather())
+    return jsonify(weather())
 
-app.run(debug=True, port=5004)
+if __name__ == "__main__":
+    app.run(debug=True, port=5004)
 
 
 print ("byebyeworld!")

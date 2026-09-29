@@ -1,0 +1,47 @@
+import requests
+from bs4 import BeautifulSoup
+
+headers = {
+    "User-Agent": "art-python-course/1.0"
+    ""
+}
+
+url = "https://ru.wikipedia.org/wiki/%D0%9B%D0%B5%D0%B2%D0%B8%D1%82%D1%82,_%D0%A1%D0%BE%D0%BB"
+
+response = requests.get(url, headers=headers)
+
+print(response.status_code)
+print(len(response.text), "символов")
+print(response.text[:400])
+
+soup = BeautifulSoup(response.text, "html.parser")
+
+print(soup.title.text)
+
+paragraphs = soup.find_all("p")
+
+image_urls = []
+for p in paragraphs [:5]:
+    print (p.get_text().strip()[:200])
+    print ('____'*20)
+
+    for img in soup.find_all("img"):
+        src = img.get("src", "")
+        if ".jpg" in src.lower():
+            if src.startswith("//"):
+                src = "https:" + src
+
+            image_urls.append(src)
+
+for img in image_urls:
+    print (img)
+
+links = []
+for a in soup.find_all("a"):
+    if a.get ("href", "").startswith("/wiki/"):
+        href = a.get("href")
+        links.append(href)
+print (f"Ссылок на статьи: {len(links)}")
+
+for img_url in image_urls:
+    print(img_url)
